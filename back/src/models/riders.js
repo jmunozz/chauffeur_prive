@@ -4,7 +4,6 @@ const { loyaltyStatuses } = require('../constants/loyalty');
 const { getDb } = require('../lib/mongodb');
 const dateLib = require('../lib/date');
 const Joi = require('../lib/joi');
-const logger = require('chpr-logger');
 
 
 const COLLECTION_NAME = 'riders';
@@ -13,6 +12,7 @@ const riderSchema = Joi.object({
   _id: Joi.objectId().required(),
   name: Joi.string().min(6),
   status: Joi.valid(loyaltyStatuses).default('bronze'),
+  loyalty_points: Joi.number().default(0),
   created_at: Joi.date().default(() => dateLib.getDate(), 'time of creation'),
 });
 
@@ -96,13 +96,32 @@ async function updateOne(riderId, updatedFields) {
     { _id: riderId },
     { $set: updatedFields },
   );
-  logger.info(
-    '[updateOne]',
-    { riderId, updatedFields },
-    result,
+  return result;
+}
+
+/**
+ * Attach ride to rider
+ *
+ * @param {ObjectId} riderId - identifier of the updated rider
+ * @param {Object} ride - fields that are updated
+ *
+ * @returns {Object/null} result of update if succeeded, null otherwise
+ */
+async function createRide(riderId, ride) {
+  const result = await collection().updateOne(
+    { _id: riderId },
+    { $addToSet: {
+        rides: ride,
+    } },
   );
   return result;
 }
+
+
+
+/**
+ * 
+ */
 
 module.exports = {
   collection,
@@ -111,4 +130,5 @@ module.exports = {
   find,
   insertOne,
   updateOne,
+  createRide,
 };

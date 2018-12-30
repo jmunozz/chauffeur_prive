@@ -9,8 +9,8 @@ const config = require('../../config');
 const mongodb = require('../../lib/mongodb');
 const Joi = require('../../lib/joi');
 
-const { handleSignupEvent, handlePhoneUpdateEvent } = require('./handlers');
-const { signupSchema, phoneUpdateSchema } = require('./schemas');
+const { handleSignupEvent, handlePhoneUpdateEvent, handleRideCreateEvent, handleRideCompleteEvent } = require('./handlers');
+const { signupSchema, phoneUpdateSchema, rideCreateSchema, rideCompleteSchema } = require('./schemas');
 
 let worker;
 
@@ -34,7 +34,16 @@ async function start() {
           validate: message => Joi.assert(message, phoneUpdateSchema),
           routingKey: 'rider.phone_update',
         },
-        // TODO add missing workers here
+        {
+          handle: handleRideCreateEvent,
+          validate: message => Joi.assert(message, rideCreateSchema),
+          routingKey: 'ride.create',
+        },
+        {
+          handle: handleRideCompleteEvent,
+          validate: message => Joi.assert(message, rideCompleteSchema),
+          routingKey: 'ride.completed',
+        },
       ],
       {
         workerName: 'loyaltyWorker',
