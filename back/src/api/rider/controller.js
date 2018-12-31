@@ -6,7 +6,7 @@ const logger = require('chpr-logger');
 const Joi = require('../../lib/joi');
 const riders = require('../../models/riders');
 
-const { getLoyaltyInfoSchema } = require('./schemas');
+const { getLoyaltyInfoSchema, getAllLoyaltyInfoSchema } = require('./schemas');
 
 /**
  * Get current rider status
@@ -33,7 +33,7 @@ async function getLoyaltyInfo(req, res) {
     '[loyalty#getLoyaltyInfo] Rider info requested',
   );
 
-  const rider = await riders.findOneById(riderId, { name: 1, status: 1 });
+  const rider = await riders.findOneById(riderId, { name: 1, status: 1, loyalty_point: 1, rides: 1 });
   if (!rider) {
     logger.info(
       { rider_id: riderId },
@@ -45,6 +45,51 @@ async function getLoyaltyInfo(req, res) {
   return res.send(rider);
 }
 
+
+
+/**
+ * Get all rider loyalty infos
+ *
+ * @param {Object} req express request
+ * @param {Object} res express response
+ *
+ * @returns {Object} response
+ */
+async function getAllLoyaltyInfo(req, res) {
+
+
+  const RESULTS_PER_PAGE = 15;
+
+  const { error, value: validatedParams } = Joi.validate(
+    Object.assign({}, req.query, req.params),
+    getAllLoyaltyInfoSchema,
+  );
+
+  if (error) {
+    logger.error({ error }, '[loyalty#getAllLoyaltyInfo] Error: invalid body');
+    return res.sendStatus(HttpStatus.BAD_REQUEST);
+  }
+
+  const cursor = await riders.collection().aggregate([
+    {
+      $project: {
+        name: 1, 
+        status: 1, 
+        rides: 1,
+        loyalty_points: 1,
+        rides_count: { $size: "$rides" }
+      },
+    }
+  ]);
+  const { sort, page } = validatedParams;
+  cursor.sort({ [sort]: -1 }).skip(page * RESULTS_PER_PAGE).limit(RESULTS_PER_PAGE);
+  const allRiders = await cursor.toArray();
+  return res.send(allRiders);
+
+}
+
+
 module.exports = {
   getLoyaltyInfo,
+  getAllLoyaltyInfo,
 };
