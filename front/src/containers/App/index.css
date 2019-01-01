@@ -1,0 +1,10 @@
+.header {
+  display:flex;
+  flex-direction: row;
+  justify-content: stretch;
+}
+
+.header-half {
+  display:flex;
+  flex:1;
+}

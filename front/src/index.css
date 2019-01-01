@@ -1,5 +1,46 @@
+/*
+** Import fonts
+*/
+@import url('https://fonts.googleapis.com/css?family=Ubuntu');
+
+
 body {
   margin: 0;
   padding: 0;
   font-family: sans-serif;
+  background-color: #F8F8F9;
+  font-family: Ubuntu, Arial;
+}
+
+.btn {
+  border: none;
+  color: white;
+  overflow: hidden;
+  margin: 1rem;
+  padding: 0;
+  text-transform: uppercase;
+  width: 150px;
+  height: 40px;
+  cursor:pointer;
+  font-weight: 700;
+}
+
+.color1 {
+  background-color: #C93535;
+}
+
+select, input {
+  display:block;
+}
+
+table {
+  width: 100%;
+}
+
+th, td {
+  padding: 10px;
+}
+
+thead tr th {
+  border-bottom: solid 2px black;
 }

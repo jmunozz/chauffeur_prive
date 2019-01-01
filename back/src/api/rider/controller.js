@@ -33,7 +33,7 @@ async function getLoyaltyInfo(req, res) {
     '[loyalty#getLoyaltyInfo] Rider info requested',
   );
 
-  const rider = await riders.findOneById(riderId, { name: 1, status: 1, loyalty_point: 1, rides: 1 });
+  const rider = await riders.findOneById(riderId, { name: 1, status: 1, loyalty_points: 1, rides: 1 });
   if (!rider) {
     logger.info(
       { rider_id: riderId },
@@ -58,7 +58,7 @@ async function getLoyaltyInfo(req, res) {
 async function getAllLoyaltyInfo(req, res) {
 
 
-  const RESULTS_PER_PAGE = 15;
+ 
 
   const { error, value: validatedParams } = Joi.validate(
     Object.assign({}, req.query, req.params),
@@ -70,7 +70,13 @@ async function getAllLoyaltyInfo(req, res) {
     return res.sendStatus(HttpStatus.BAD_REQUEST);
   }
 
-  const cursor = await riders.collection().aggregate([
+  
+  const { sort, page, size, status } = validatedParams;
+  const pipeline = [];
+  if (status) {
+    pipeline.push({ $match: { status }});
+  }
+  pipeline.push(
     {
       $project: {
         name: 1, 
@@ -78,11 +84,11 @@ async function getAllLoyaltyInfo(req, res) {
         rides: 1,
         loyalty_points: 1,
         rides_count: { $size: "$rides" }
-      },
+      }
     }
-  ]);
-  const { sort, page } = validatedParams;
-  cursor.sort({ [sort]: -1 }).skip(page * RESULTS_PER_PAGE).limit(RESULTS_PER_PAGE);
+  );
+  const cursor = await riders.collection().aggregate(pipeline);
+  cursor.sort({ [sort]: -1 }).skip(page * size).limit(size);
   const allRiders = await cursor.toArray();
   return res.send(allRiders);
 
