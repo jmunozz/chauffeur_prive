@@ -3,7 +3,7 @@ import request from 'superagent';
 
 const { loyaltyStatuses, loyaltyThreesholds, RIDE } = require('../../constants');
 
-const REFRESH_LAPSE = 3000;
+const REFRESH_LAPSE = 1000;
 let refresh;
 const urlForRider = (id) => `http://localhost:8000/api/rider/loyalty/${id}`;
 

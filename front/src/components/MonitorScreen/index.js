@@ -2,7 +2,7 @@ import React from 'react';
 import request from 'superagent';
 
 
-const REFRESH_LAPSE = 3000;
+const REFRESH_LAPSE = 1000;
 let refresh;
 
 class Screen extends React.Component {
