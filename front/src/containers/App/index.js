@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
-
-import './index.css';
+import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 
 import CheckPage from '../CheckPage';
 import MonitorPage from '../MonitorPage';
+
+import './index.css';
 
 class App extends Component {
 
@@ -30,11 +30,11 @@ class App extends Component {
               </div>
           </div>
           </header>
-          <body>            
+          <div>            
             <Route exact path="/" component={CheckPage}></Route>
             <Route path="/check" component={CheckPage}></Route>
             <Route path="/monitor" component={MonitorPage}></Route>
-          </body>
+          </div>
         </div>
       </Router>
     );

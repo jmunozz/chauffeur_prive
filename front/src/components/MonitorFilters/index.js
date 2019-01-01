@@ -15,13 +15,7 @@ function Filters({ setOption, unsetOption, options }) {
             <label>Filter by:
                 <select 
                     value={options.status}
-                    onChange={(e) => {
-                        if (e.target.value === 'all')
-                            unsetOption('status');
-                        else {
-                            setOption({ status : e.target.value });
-                        }
-                    }}
+                    onChange={handleSelectFilter.bind(null, unsetOption, setOption)}
                 >
                     <option value="all">all</option>
                     <option value="bronze">bronze</option>
@@ -41,6 +35,15 @@ function Filters({ setOption, unsetOption, options }) {
             </label>
         </div>
     );
+}
+
+
+function handleSelectFilter(unsetOption, setOption, e) {
+    if (e.target.value === 'all')
+        unsetOption('status');
+    else {
+        setOption({ status : e.target.value });
+    }
 }
 
 export default Filters;

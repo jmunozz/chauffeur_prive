@@ -78,13 +78,43 @@ describe('workers/loyalty', () => {
           _id: ObjectId.createFromHexString('000000000000000000000001'),
           name: 'John Doe',
           status: 'bronze',
+          rides: [],
+          loyalty_points: 0,
           created_at: date,
         },
       ]);
     });
 
-    it.skip('does not try to save user if he is already saved in db', async () => {
-      // TODO : implement this behavior
+    it('does not try to save user if he is already saved in db', async () => {
+      const date = new Date('2018-01-01T12:00:00');
+      const message = {
+        type: 'rider_signed_up',
+        payload: {
+          id: '000000000000000000000001',
+          name: 'John Doe',
+        },
+      };
+      const rider = {
+        _id: ObjectId.createFromHexString('000000000000000000000001'),
+        name: 'John Doe',
+      }
+      await riderModel.insertOne(rider);
+      await publish('rider.signup', message);
+      await worker.wait(worker.TASK_FAILED);
+
+
+      const riders = await riderModel.find().toArray();
+      expect(riders).to.deep.equal([
+        {
+          _id: ObjectId.createFromHexString('000000000000000000000001'),
+          name: 'John Doe',
+          status: 'bronze',
+          rides: [],
+          loyalty_points: 0,
+          created_at: date,
+        },
+      ]);
+
     });
 
     it('tries a second time then drops message if error during rider insertion', async () => {

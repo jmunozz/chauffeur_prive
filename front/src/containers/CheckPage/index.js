@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import './index.css';
 
-import Rider from '../../containers/Rider';
+import Rider from '../../components/Rider';
+
+import './index.css';
 
 class CheckPage extends Component {
 
@@ -13,15 +14,12 @@ class CheckPage extends Component {
 
   handleInput = (e) => {
     e.preventDefault();
-    const newInput = e.target.value;
-    this.setState({ input: newInput });
+    this.setState({ input: e.target.value });
   }
 
   handleSubmit = (e) => {
     e.preventDefault();
-    const { state } = this;
-    const { input } = state;
-    this.setState({ id : input })
+    this.setState({ id : this.state.input })
   }
 
   handleReset = (e) => {
@@ -31,16 +29,12 @@ class CheckPage extends Component {
 
 
   render() {
-    const { state } = this;
-    const { id, input} = state;
-
-
       return (
         <div className="page-wrapper">
           <div className="box-wrapper">
             <div className="box" style={{maxHeight:"200px"}}>
               <form id="check-form" onSubmit={this.handleSubmit}>
-                <input type="text" onChange={this.handleInput} value={input}></input>
+                <input type="text" onChange={this.handleInput} value={this.state.input}></input>
                 <input className="btn color1" type="submit" value="Search"></input>
                 <button className="btn color1" type="button" onClick={this.handleReset}>reset</button>
               </form>
@@ -48,7 +42,7 @@ class CheckPage extends Component {
           </div>
           <div className="box-wrapper">
             <div className="box">
-              <Rider id={id} />
+              <Rider id={this.state.id} />
             </div>
           </div>
         </div>
@@ -57,3 +51,4 @@ class CheckPage extends Component {
 }
 
 export default CheckPage;
+

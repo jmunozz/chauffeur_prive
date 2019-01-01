@@ -40,6 +40,8 @@ describe('models/riders', () => {
         _id: ObjectId.createFromHexString('000000000000000000000001'),
         name: 'Test User',
         status: 'bronze',
+        loyalty_points: 0,
+        rides: [],
         created_at: date,
       });
 
@@ -52,6 +54,8 @@ describe('models/riders', () => {
           _id: ObjectId.createFromHexString('000000000000000000000001'),
           name: 'Test User',
           status: 'bronze',
+          loyalty_points: 0,
+          rides: [],
           created_at: date,
         },
       ]);
@@ -118,6 +122,8 @@ describe('models/riders', () => {
           _id: ObjectId.createFromHexString('000000000000000000000001'),
           name: 'Test User',
           status: 'platinum',
+          rides: [],
+          loyalty_points: 0,
           created_at: date,
         },
       ]);
@@ -222,6 +228,8 @@ describe('models/riders', () => {
         _id: ObjectId.createFromHexString('000000000000000000000001'),
         name: 'Test User',
         status: 'bronze',
+        rides: [],
+        loyalty_points: 0,
         created_at: date,
       });
     });

@@ -3,6 +3,9 @@
 */
 @import url('https://fonts.googleapis.com/css?family=Ubuntu');
 
+/*
+** General.
+*/
 
 body {
   margin: 0;
@@ -11,6 +14,18 @@ body {
   background-color: #F8F8F9;
   font-family: Ubuntu, Arial;
 }
+
+.color1 {
+  background-color: #C93535;
+}
+
+select, input {
+  display:block;
+}
+
+/*
+** Button elements.
+*/
 
 .btn {
   border: none;
@@ -25,13 +40,9 @@ body {
   font-weight: 700;
 }
 
-.color1 {
-  background-color: #C93535;
-}
-
-select, input {
-  display:block;
-}
+/*
+** Table elements.
+*/
 
 table {
   width: 100%;
@@ -43,4 +54,35 @@ th, td {
 
 thead tr th {
   border-bottom: solid 2px black;
+}
+
+/*
+** Page elements.
+*/
+
+.page-wrapper {
+  max-width: 1000px;
+  margin: auto;
+  margin-top: 50px;
+  display:flex;
+  flex-direction: row;
+  justify-content: stretch;
+}
+
+.box-wrapper {
+  display: flex;
+  padding: 20px;
+  box-sizing: border-box;
+  flex:1;
+}
+
+.box {
+  display: flex;
+  background-color: white;
+  padding:20px;
+  box-sizing: border-box;
+  width:100%;
+  flex-direction:column;
+  justify-content: center;
+  min-height: 200px;
 }

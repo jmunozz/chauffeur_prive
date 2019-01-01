@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import request from 'superagent';
-import RideTable from '../../components/RideTable';
 
-const { loyaltyStatuses, loyaltyThreesholds } = require('../../constants');
+const { loyaltyStatuses, loyaltyThreesholds, RIDE } = require('../../constants');
 
 const REFRESH_LAPSE = 3000;
 let refresh;
@@ -27,7 +26,7 @@ class Rider extends Component {
         rider: res.body,
         error: null,
       });
-      // refresh = setTimeout(() => this.fetchRider(id), REFRESH_LAPSE);
+      refresh = setTimeout(() => this.fetchRider(id), REFRESH_LAPSE);
     })
     .catch((err) => {
       this.setState({
@@ -39,16 +38,15 @@ class Rider extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { props } = this;
     clearTimeout(refresh);
-    if (!props.id && prevProps.id) {
+    if (!this.props.id && prevProps.id) {
       return this.setState({ rider: null });
     }
-    if (!props.id) {
+    if (!this.props.id) {
       return;
     }
-    if (props.id !== prevProps.id) {
-      return this.fetchRider(props.id);
+    if (this.props.id !== prevProps.id) {
+      return this.fetchRider(this.props.id);
     }
   }
 
@@ -72,12 +70,16 @@ class Rider extends Component {
         </p>
         <p>
           <i class="fas fa-car"></i>
-          <span style={{marginLeft:"15px"}}>{this.state.rider.rides.length}</span>
+          <span style={{marginLeft:"15px"}}>{getCompletedRides(this.state.rider.rides).length}</span>
         </p>
-        <p>{calculateRidesBeforeNextStatus(this.state.rider.rides.length)}</p>
+        <p>{calculateRidesBeforeNextStatus(getCompletedRides(this.state.rider.rides).length)}</p>
       </div>
     );
   }
+}
+
+function getCompletedRides(rides) {
+  return rides.filter(r => r.status === RIDE.STATUS.COMPLETED);
 }
 
 
@@ -89,4 +91,3 @@ function calculateRidesBeforeNextStatus(rides) {
 }
 
 export default Rider;
-

@@ -1,8 +1,7 @@
 import React from 'react';
 
-import Screen from './Screen';
-import Filters from './Filters';
-import './index.css';
+import MonitorScreen from '../../components/MonitorScreen';
+import MonitorFilters from '../../components/MonitorFilters';
 
 class MonitorPage extends React.Component {
 
@@ -24,18 +23,16 @@ class MonitorPage extends React.Component {
     }
 
     render() {
-
-
         return (
             <div className="page-wrapper">
             <div style={{flex:"1"}}className="box-wrapper">
               <div className="box" style={{maxHeight:"200px"}}>
-                <Filters unsetOption={this.unsetOption} setOption={this.setOption} options={this.state.options} />
+                <MonitorFilters unsetOption={this.unsetOption} setOption={this.setOption} options={this.state.options} />
               </div>
             </div>
             <div style={{flex:"2"}}className="box-wrapper">
               <div className="box">
-                <Screen options={this.state.options}/>
+                <MonitorScreen options={this.state.options}/>
               </div>
             </div>
           </div>

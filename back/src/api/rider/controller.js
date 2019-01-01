@@ -5,11 +5,11 @@ const logger = require('chpr-logger');
 
 const Joi = require('../../lib/joi');
 const riders = require('../../models/riders');
-
 const { getLoyaltyInfoSchema, getAllLoyaltyInfoSchema } = require('./schemas');
+const { RIDE } = require('../../constants/loyalty');
 
 /**
- * Get current rider status
+ * Get current rider loyalty infos.
  *
  * @param {Object} req express request
  * @param {Object} res express response
@@ -48,7 +48,7 @@ async function getLoyaltyInfo(req, res) {
 
 
 /**
- * Get all rider loyalty infos
+ * Get all rider loyalty infos (sorted).
  *
  * @param {Object} req express request
  * @param {Object} res express response
@@ -56,9 +56,6 @@ async function getLoyaltyInfo(req, res) {
  * @returns {Object} response
  */
 async function getAllLoyaltyInfo(req, res) {
-
-
- 
 
   const { error, value: validatedParams } = Joi.validate(
     Object.assign({}, req.query, req.params),
@@ -70,12 +67,31 @@ async function getAllLoyaltyInfo(req, res) {
     return res.sendStatus(HttpStatus.BAD_REQUEST);
   }
 
-  
   const { sort, page, size, status } = validatedParams;
   const pipeline = [];
+
+  // Filter by status.
   if (status) {
     pipeline.push({ $match: { status }});
   }
+  // Filter on completed rides
+  pipeline.push(
+    {
+      $project: {
+        name: 1, 
+        status: 1, 
+        rides: {
+          $filter: {
+            input: '$rides',
+            as: 'ride',
+            cond: { $eq: ['$$ride.status', RIDE.STATUS.COMPLETED ]}
+          }
+        },
+        loyalty_points: 1,
+      }
+    }
+  )
+  // Count rides.
   pipeline.push(
     {
       $project: {
@@ -91,9 +107,7 @@ async function getAllLoyaltyInfo(req, res) {
   cursor.sort({ [sort]: -1 }).skip(page * size).limit(size);
   const allRiders = await cursor.toArray();
   return res.send(allRiders);
-
 }
-
 
 module.exports = {
   getLoyaltyInfo,

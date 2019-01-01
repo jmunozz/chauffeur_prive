@@ -13,6 +13,7 @@ const riderSchema = Joi.object({
   name: Joi.string().min(6),
   status: Joi.valid(loyaltyStatuses).default('bronze'),
   loyalty_points: Joi.number().default(0),
+  rides: Joi.array().default([]),
   created_at: Joi.date().default(() => dateLib.getDate(), 'time of creation'),
 });
 

@@ -2,11 +2,10 @@ import React from 'react';
 import request from 'superagent';
 
 
-const REFRESH_LAPSE = 10000;
+const REFRESH_LAPSE = 3000;
 let refresh;
 
 class Screen extends React.Component {
-
 
     state = {
         loading: false,
@@ -19,18 +18,15 @@ class Screen extends React.Component {
     }
 
     componentDidUpdate(prevProps) {
-        console.log('props', this.props);
-        console.log('prevProps', prevProps);
-        const { props } = this;
-        if ((props.options.size !== prevProps.options.size) 
-            || (props.options.sort !== prevProps.options.sort) 
-            || (props.options.status !== prevProps.options.status)) {
-                console.log('on la refait!')
-                this.fetchRiders(props.options);
+        clearTimeout(refresh);
+        if ((this.props.options.size !== prevProps.options.size) 
+            || (this.props.options.sort !== prevProps.options.sort) 
+            || (this.props.options.status !== prevProps.options.status)) {
+                this.fetchRiders(this.props.options);
             }
     }
 
-    fetchRiders(options) {
+    fetchRiders(options, displayLoading = true) {
         let url = `http://localhost:8000/api/rider/loyalty`;
         const qs = [];
         if (options.sort) qs.push(`sort=${options.sort}`);
@@ -39,7 +35,11 @@ class Screen extends React.Component {
         if (qs.length) {
             url += `?${qs.join('&')}`;
         }
-        this.setState({ loading: true });
+
+        if (displayLoading) {
+            this.setState({ loading: true });
+        }
+
         request
         .get(url)
         .then(res => {
@@ -48,7 +48,7 @@ class Screen extends React.Component {
             riders: res.body,
             error: null,
           });
-        //   refresh = setTimeout(() => this.fetchRiders(options), REFRESH_LAPSE);
+          refresh = setTimeout(() => this.fetchRiders(options, false), REFRESH_LAPSE);
         })
         .catch((err) => {
           this.setState({
@@ -69,7 +69,7 @@ class Screen extends React.Component {
 
         const tableData = this.state.riders.map(r => {
             return (
-                <tr>
+                <tr key={r.id}>
                     <th>{r.name}</th>
                     <th>{r.loyalty_points}</th>
                     <th>{r.rides_count}</th>

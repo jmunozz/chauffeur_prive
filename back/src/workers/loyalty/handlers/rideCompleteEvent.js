@@ -8,7 +8,7 @@ const riderModel = require('../../../models/riders');
 const { RIDE, loyaltyBonus, loyaltyStatuses } = require('../../../constants/loyalty');
 
 /**
- * Bus message handler for user ride creation event.
+ * Bus message handler for user ride completion event.
  *
  * @param   {Object} message The bus message object.
  * @param   {Object} messageFields The bus message metadata.
@@ -31,6 +31,7 @@ async function handleRideComplete(message, messageFields) {
     );
  
     const rider = await riderModel.findOneById(ObjectId(riderId));
+    if (!rider) throw new Error('user does not exist');
     const ride = rider.rides.find(r => r.id === rideId);
     if (ride && ride.status === RIDE.STATUS.COMPLETED) throw new Error('ride already handled');
     await riderModel.collection().updateOne(

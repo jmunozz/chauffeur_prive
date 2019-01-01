@@ -7,7 +7,6 @@ const getLoyaltyInfoSchema = Joi.object().keys({
   rider_id: Joi.objectId().required(),
 });
 
-
 const getAllLoyaltyInfoSchema = Joi.object().keys({
   page: Joi.number().min(0).default(0),
   size: Joi.number().min(1).max(200).default(20),
