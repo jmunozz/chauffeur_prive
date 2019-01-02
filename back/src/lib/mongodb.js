@@ -16,7 +16,6 @@ async function connect() {
     config.mongodb.url,
     config.mongodb.options,
   );
-  await db.authenticate(config.mongodb.user, config.mongodb.password);
   logger.info({ db: config.mongodb.name }, '> Database connected');
 }
 

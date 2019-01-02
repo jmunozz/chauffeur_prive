@@ -6,8 +6,6 @@ module.exports = {
     name: 'loyalty',
     url: process.env.MONGO_URL || 'mongodb://localhost:27017/temp',
     options: {},
-    user: process.env.MONGO_USER,
-    password: process.env.MONGO_PASSWORD,
   },
   amqp: {
     exchange: process.env.AMQP_MAIN_EXCHANGE || 'events',
